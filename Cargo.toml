@@ -1,0 +1,9 @@
+[package]
+name = "Algebraic_Circuit_Verification_of_r_xyzu_Using_Matrix_Constraints_in_Rust"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ndarray = "0.15"
+rand = "0.8"
+

@@ -1,9 +1,12 @@
-use ndarray::array;
-use rand::Rng;
+use ndarray::{array}; // Removed unused imports
+use rand::{rng, Rng};
 
+fn generate_random_value() -> u128 {
+    let mut rng = rng(); // Updated from thread_rng()
+    rng.random_range(1..100) // Updated from gen_range()
+}
 
 fn main() {
-    // Define matrices L, R, O
     let l = array![
         [0, 0, 1, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 1, 0, 0, 0],
@@ -22,27 +25,31 @@ fn main() {
         [0, 1, 0, 0, 0, 0, 0, 0]
     ];
 
-    // Generate random values using u128 to prevent overflow
-    let mut rng = rand::thread_rng();
-    let x: u128 = rng.gen_range(1..=1000);
-    let y: u128 = rng.gen_range(1..=1000);
-    let z: u128 = rng.gen_range(1..=1000);
-    let u: u128 = rng.gen_range(1..=1000);
+    let x = generate_random_value();
+    let y = generate_random_value();
+    let z = generate_random_value();
+    let u = generate_random_value();
 
-    // Compute the algebraic circuit
-    let r_value: u128 = x * y * z * u;
-    let v1: u128 = x * y;
-    let v2: u128 = z * u;
+    println!("Generated values: x = {}, y = {}, z = {}, u = {}", x, y, z, u);
 
-    // Create witness vector
+    let r_value = x.checked_mul(y).unwrap()
+                    .checked_mul(z).unwrap()
+                    .checked_mul(u).unwrap();
+    let v1 = x * y;
+    let v2 = z * u;
+
     let a = array![1, r_value, x, y, z, u, v1, v2];
 
-    // Perform element-wise multiplication check
-    let lhs = o.dot(&a);
-    let rhs = l.dot(&a) * r.dot(&a);
+    let left_result = l.dot(&a);
+    let right_result = r.dot(&a);
+    let output_result = o.dot(&a);
 
-    // Assert that the constraints hold
-    assert!(lhs == rhs, "System contains an inequality");
+    let elementwise_product = &left_result * &right_result;
 
-    println!("Verification successful!");
+    assert!(
+        output_result == elementwise_product,
+        "System contains an inequality!"
+    );
+
+    println!("Verification successful: The equation holds.");
 }

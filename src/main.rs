@@ -1,6 +1,7 @@
 use ndarray::array;
 use rand::Rng;
 
+
 fn main() {
     // Define matrices L, R, O
     let l = array![
